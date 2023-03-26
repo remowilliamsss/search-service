@@ -20,8 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/application-test.yml")
-@Sql(value = {"/sql/create-products.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {"/sql/delete-products.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/sql/create-items.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/sql/delete-items.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class SearchTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -39,11 +39,6 @@ public class SearchTest {
     public static final String SKU_FOR_SNEAKERHEAD = "BV4584-400";
     public static final String SKU_FOR_FOOTBOX = "FB1875-141";
     public static final String SKU_FOR_ALL_STORES = "DR7515-200";
-    public static final String PAGE = "page";
-    public static final String SIZE = "size";
-    public static final String MESSAGE = "message";
-    public static final String SOME_STRING = "some string";
-    public static final String EMPTY_QUERY_MESSAGE = "query - must not be empty;";
     public static final String FIRST_RESULT_SECOND_STORE = "itemDtos[0].offers[1]";
     public static final String FIRST_RESULT_FIRST_STORE_NAME = "itemDtos[0].offers[0].storeName";
 
