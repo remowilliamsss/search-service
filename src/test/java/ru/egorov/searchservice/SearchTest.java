@@ -39,8 +39,8 @@ public class SearchTest {
     public static final String SKU_FOR_SNEAKERHEAD = "BV4584-400";
     public static final String SKU_FOR_FOOTBOX = "FB1875-141";
     public static final String SKU_FOR_ALL_STORES = "DR7515-200";
-    public static final String FIRST_RESULT_SECOND_STORE = "itemDtos[0].offers[1]";
-    public static final String FIRST_RESULT_FIRST_STORE_NAME = "itemDtos[0].offers[0].storeName";
+    public static final String FIRST_RESULT_SECOND_STORE = "content[0].offers[1]";
+    public static final String FIRST_RESULT_FIRST_STORE_NAME = "content[0].offers[0].storeName";
 
     @BeforeEach
     public void setup() {
@@ -95,7 +95,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("itemDtos")
+                .andExpect(jsonPath("content")
                         .isEmpty());
     }
 
@@ -107,7 +107,7 @@ public class SearchTest {
                         .isOk())
                 .andExpect(content()
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("itemDtos[3]")
+                .andExpect(jsonPath("content[3]")
                         .exists());
     }
 
@@ -153,9 +153,9 @@ public class SearchTest {
                         .param("size", "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("itemDtos[1]")
+                .andExpect(jsonPath("content[1]")
                         .exists())
-                .andExpect(jsonPath("itemDtos[2]")
+                .andExpect(jsonPath("content[2]")
                         .doesNotExist());
     }
 
@@ -166,9 +166,9 @@ public class SearchTest {
                         .param("size", "2"))
                 .andExpect(status()
                         .isOk())
-                .andExpect(jsonPath("itemDtos[1]")
+                .andExpect(jsonPath("content[1]")
                         .exists())
-                .andExpect(jsonPath("itemDtos[2]")
+                .andExpect(jsonPath("content[2]")
                         .doesNotExist());
     }
 

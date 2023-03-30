@@ -2,16 +2,15 @@ package ru.egorov.searchservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import ru.egorov.searchservice.dto.ItemDto;
-import ru.egorov.searchservice.dto.ItemResponse;
 import ru.egorov.searchservice.mapper.ItemMapper;
 import ru.egorov.searchservice.model.Item;
 import ru.egorov.searchservice.model.StoreType;
 import ru.egorov.searchservice.service.ItemService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -21,20 +20,12 @@ public class SearchController {
     private final ItemMapper itemMapper;
 
     @GetMapping("/search")
-    public ItemResponse search(@RequestParam(name = "query") String query,
-                         @RequestParam(name = "page", required = false) Integer page,
-                         @RequestParam(name = "size", required = false) Integer size) {
+    public Page<ItemDto> search(@RequestParam(name = "query") String query,
+                        @PageableDefault(sort = {"offers.price"}, direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Item> itemPage = (size == null || page == null) ?
-                itemService.findAllByName(query, PageRequest.of(0, 30))
-                : itemService.findAllByName(query, PageRequest.of(page, size));
+        Page<Item> itemPage = itemService.findAllByName(query, pageable);
 
-        List<ItemDto> itemDtos = itemPage.getContent()
-                .stream()
-                .map(itemMapper::toDto)
-                .toList();
-
-        return new ItemResponse(itemDtos, itemPage.getTotalPages());
+        return itemPage.map(itemMapper::toDto);
     }
 
     @GetMapping("items/{sku}")
@@ -43,19 +34,11 @@ public class SearchController {
     }
 
     @GetMapping("stores/{store}")
-    public ItemResponse storePage(@PathVariable("store") StoreType store,
-                            @RequestParam(name = "page", required = false) Integer page,
-                            @RequestParam(name = "size", required = false) Integer size) {
+    public Page<ItemDto> storePage(@PathVariable("store") StoreType store,
+                       @PageableDefault(sort = {"offers.price"}, direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Item> itemPage = (size == null || page == null) ?
-                itemService.findAllByStore(store, PageRequest.of(0, 30))
-                : itemService.findAllByStore(store, PageRequest.of(page, size));
+        Page<Item> itemPage = itemService.findAllByStore(store, pageable);
 
-        List<ItemDto> itemDtos = itemPage.getContent()
-                .stream()
-                .map(itemMapper::toDto)
-                .toList();
-
-        return new ItemResponse(itemDtos, itemPage.getTotalPages());
+        return itemPage.map(itemMapper::toDto);
     }
 }
