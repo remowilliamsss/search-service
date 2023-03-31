@@ -5,10 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.egorov.searchservice.dto.ItemDto;
 import ru.egorov.searchservice.mapper.ItemMapper;
-import ru.egorov.searchservice.model.Item;
 import ru.egorov.searchservice.model.StoreType;
 import ru.egorov.searchservice.service.ItemService;
 
@@ -20,25 +21,28 @@ public class SearchController {
     private final ItemMapper itemMapper;
 
     @GetMapping("/search")
-    public Page<ItemDto> search(@RequestParam(name = "query") String query,
-                        @PageableDefault(sort = {"offers.price"}, direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ItemDto>> search(@RequestParam(name = "query") String query,
+                                               @PageableDefault(sort = {"offers.price"}, direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Item> itemPage = itemService.findAllByName(query, pageable);
+        Page<ItemDto> itemPage = itemService.findAllByName(query, pageable)
+                .map(itemMapper::toDto);
 
-        return itemPage.map(itemMapper::toDto);
+        return new ResponseEntity<>(itemPage, HttpStatus.OK);
     }
 
     @GetMapping("items/{sku}")
-    public ItemDto show(@PathVariable("sku") String sku) {
-        return itemMapper.toDto(itemService.findBySku(sku));
+    public ResponseEntity<ItemDto> show(@PathVariable("sku") String sku) {
+        ItemDto itemDto = itemMapper.toDto(itemService.findBySku(sku));
+        return new ResponseEntity<>(itemDto, HttpStatus.OK);
     }
 
     @GetMapping("stores/{store}")
-    public Page<ItemDto> storePage(@PathVariable("store") StoreType store,
+    public ResponseEntity<Page<ItemDto>> storePage(@PathVariable("store") StoreType store,
                        @PageableDefault(sort = {"offers.price"}, direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Item> itemPage = itemService.findAllByStore(store, pageable);
+        Page<ItemDto> itemPage = itemService.findAllByStore(store, pageable)
+                .map(itemMapper::toDto);
 
-        return itemPage.map(itemMapper::toDto);
+        return new ResponseEntity<>(itemPage, HttpStatus.OK);
     }
 }

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.yml")
+@TestPropertySource("/application-test.properties")
 @Sql(value = {"/sql/create-items.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/delete-items.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class SearchTest {
